@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>איש תלוי לשיעור מקוון - מותאם למובייל</title>
+    <title>איש תלוי לשיעור מקוון - מותאם למובייל וחלק יותר</title>
     <style>
         /* עיצוב כללי ורקע */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             text-align: center; 
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            height: 100vh;
             padding: 20px; 
             color: #2c3e50; 
             margin: 0; 
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
         
         h1 {
@@ -33,6 +36,7 @@
             max-width: 700px; 
             margin: 20px auto; 
             backdrop-filter: blur(5px);
+            transition: box-shadow 0.3s ease;
         }
         
         /* רשימת המילים והקטגוריות */
@@ -62,7 +66,7 @@
             border: 2px solid #e0e6ed; 
             border-radius: 8px; 
             flex: 1;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             outline: none;
             width: 100%;
             box-sizing: border-box;
@@ -81,7 +85,7 @@
             font-size: 1.2rem; 
             font-weight: bold;
             cursor: pointer; 
-            transition: all 0.2s; 
+            transition: all 0.3s ease; 
             box-shadow: 0 4px 15px rgba(52,152,219,0.4);
             margin-top: 10px;
             width: 100%;
@@ -114,6 +118,7 @@
             justify-content: center; 
             align-items: center; 
             box-sizing: border-box;
+            transition: box-shadow 0.3s ease;
         }
         
         #category-display { 
@@ -155,7 +160,7 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .status { font-size: 1.6rem; margin: 15px 0; font-weight: bold; transition: color 0.3s; }
+        .status { font-size: 1.6rem; margin: 15px 0; font-weight: bold; transition: color 0.3s ease; }
         .game-over { color: #e74c3c; animation: shake 0.5s; }
         .win { color: #2ecc71; animation: bounce 1s; }
 
@@ -166,18 +171,18 @@
             font-size: 1.3rem; 
             cursor: pointer; 
             border: none; 
-            background: white; 
+            background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%);
             border-radius: 10px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.2s; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease; 
             font-weight: bold; 
             color: #34495e;
             /* מונע זום בטלפון בעת לחיצה כפולה */
             touch-action: manipulation; 
         }
-        .letter-btn:hover:not(.disabled) { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: #f8f9fa; }
-        .letter-btn.correct { background: #2ecc71; color: white; box-shadow: 0 0 15px rgba(46, 204, 113, 0.5); animation: popIn 0.3s; }
-        .letter-btn.wrong { background: #e74c3c; color: white; opacity: 0.7; animation: shake 0.4s; }
+        .letter-btn:hover:not(.disabled) { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); background: linear-gradient(180deg, #fdfdfe 0%, #f4f7fa 100%); }
+        .letter-btn.correct { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); animation: popIn 0.3s; }
+        .letter-btn.wrong { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; opacity: 0.7; animation: shake 0.4s; }
         .disabled { pointer-events: none; }
 
         @keyframes shake {
@@ -198,15 +203,15 @@
             cursor: pointer; 
             border-radius: 30px; 
             border: none; 
-            background: #f39c12; 
+            background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
             color: white;
             font-size: 1.2rem;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
-            transition: all 0.2s; 
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+            transition: all 0.3s ease; 
             display: none; 
         }
-        #next-btn:hover { background: #e67e22; transform: translateY(-2px); }
+        #next-btn:hover { background: linear-gradient(135deg, #e67e22 0%, #c16e1a 100%); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(243, 156, 18, 0.5); }
 
         .hidden { display: none !important; }
         
@@ -216,6 +221,15 @@
             transition: stroke-dashoffset 0.8s ease-out, opacity 0.3s ease-out;
         }
         .draw-part.visible { stroke-dashoffset: 0; opacity: 1; }
+
+        /* פוטר */
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-align: center;
+        }
 
         /* =========================================
            התאמות למסכים קטנים (מובייל וטאבלטים)
@@ -325,6 +339,10 @@
         </div>
 
     </div>
+
+    <footer>
+        מחשבה עידו שושני ביצוע GEMINI
+    </footer>
 
     <script>
         let wordsData = []; 
