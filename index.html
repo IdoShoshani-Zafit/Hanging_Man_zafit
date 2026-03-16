@@ -2,7 +2,8 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>איש תלוי לשיעור מקוון - קטגוריה לכל מילה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>איש תלוי לשיעור מקוון - מותאם למובייל</title>
     <style>
         /* עיצוב כללי ורקע */
         body { 
@@ -52,6 +53,7 @@
             font-weight: bold;
             color: #7f8c8d;
             width: 25px;
+            text-align: right;
         }
 
         .cat-input, .word-input { 
@@ -62,6 +64,8 @@
             flex: 1;
             transition: all 0.3s;
             outline: none;
+            width: 100%;
+            box-sizing: border-box;
         }
         .cat-input:focus, .word-input:focus { 
             border-color: #3498db; 
@@ -80,6 +84,8 @@
             transition: all 0.2s; 
             box-shadow: 0 4px 15px rgba(52,152,219,0.4);
             margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
         }
         button.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(52,152,219,0.6); }
 
@@ -95,7 +101,7 @@
             padding: 20px; 
         }
         
-        .game-main { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .game-main { flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
         
         .hangman-visual { 
             width: 280px; 
@@ -107,6 +113,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
+            box-sizing: border-box;
         }
         
         #category-display { 
@@ -152,19 +159,21 @@
         .game-over { color: #e74c3c; animation: shake 0.5s; }
         .win { color: #2ecc71; animation: bounce 1s; }
 
-        .letters-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 650px; margin-top: 10px; }
+        .letters-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 650px; margin-top: 10px; }
         .letter-btn { 
-            width: 48px; 
-            height: 48px; 
-            font-size: 1.4rem; 
+            width: 45px; 
+            height: 45px; 
+            font-size: 1.3rem; 
             cursor: pointer; 
             border: none; 
             background: white; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: all 0.2s; 
             font-weight: bold; 
             color: #34495e;
+            /* מונע זום בטלפון בעת לחיצה כפולה */
+            touch-action: manipulation; 
         }
         .letter-btn:hover:not(.disabled) { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); background: #f8f9fa; }
         .letter-btn.correct { background: #2ecc71; color: white; box-shadow: 0 0 15px rgba(46, 204, 113, 0.5); animation: popIn 0.3s; }
@@ -207,6 +216,63 @@
             transition: stroke-dashoffset 0.8s ease-out, opacity 0.3s ease-out;
         }
         .draw-part.visible { stroke-dashoffset: 0; opacity: 1; }
+
+        /* =========================================
+           התאמות למסכים קטנים (מובייל וטאבלטים)
+           ========================================= */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            h1 { font-size: 2rem; margin-top: 5px; }
+            
+            .setup-section { padding: 20px 15px; margin: 10px auto; }
+            
+            /* שינוי תצוגת הזנת המילים למובייל - ערימה במקום שורה */
+            .word-row { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                background: rgba(236, 240, 241, 0.5); 
+                padding: 15px; 
+                border-radius: 12px;
+                gap: 10px;
+            }
+            .word-row span { margin-bottom: 5px; color: #34495e; }
+            
+            /* סידור מחדש של אזור המשחק כך שהציור יהיה למעלה והמקלדת למטה */
+            #game-area { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 25px; 
+                padding: 10px 0;
+            }
+            
+            .hangman-visual { 
+                width: 100%; 
+                max-width: 280px; 
+                height: auto; 
+                aspect-ratio: 7/8; /* שומר על הפרופורציות של הציור */
+            }
+            
+            #word-display { 
+                font-size: 2.2rem; /* טקסט קטן יותר כדי שיכנסו מילים ארוכות */
+                margin: 10px 0 15px 0;
+            }
+            
+            .letter-box { min-width: 25px; border-bottom-width: 3px; }
+            .space-box { min-width: 15px; }
+            
+            #category-display { font-size: 1.2rem; padding: 8px 20px; }
+            .status { font-size: 1.3rem; }
+            
+            /* הקטנת כפתורי האותיות כדי שייכנסו בנוחות במסך קטן */
+            .letter-btn { 
+                width: 38px; 
+                height: 38px; 
+                font-size: 1.1rem; 
+                border-radius: 8px;
+            }
+            
+            .letters-grid { gap: 6px; }
+        }
     </style>
 </head>
 <body>
@@ -261,7 +327,7 @@
     </div>
 
     <script>
-        let wordsData = []; // מערך שישמור אובייקטים של {category, word}
+        let wordsData = []; 
         let currentWordIndex = 0;
         let secretWord = "";
         let guessedLetters = [];
@@ -271,7 +337,6 @@
         const alphabet = "אבגדהוזחטיכלמנסעפצקרשת".split("");
         const finalToRegular = { 'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ' };
 
-        // בניית שורות ההזנה בטעינת העמוד
         window.onload = function() {
             const container = document.getElementById('words-inputs-container');
             for (let i = 1; i <= 10; i++) {
@@ -284,7 +349,6 @@
                 const catInput = document.createElement('input');
                 catInput.type = 'text';
                 catInput.className = 'cat-input';
-                // דוגמאות ממחישות בשורה הראשונה והשנייה
                 if (i === 1) catInput.placeholder = "נושא (למשל: מגמות)";
                 else if (i === 2) catInput.placeholder = "נושא (למשל: אוכל)";
                 else catInput.placeholder = "נושא";
@@ -307,12 +371,10 @@
             wordsData = [];
             const rows = document.querySelectorAll('.word-row');
             
-            // מעבר על כל השורות ואיסוף הנתונים
             rows.forEach(row => {
                 const catVal = row.querySelector('.cat-input').value.trim();
                 const wordVal = row.querySelector('.word-input').value.trim();
                 
-                // אם הוכנסה מילה, שומרים אותה (אם לא הוכנסה קטגוריה, נרשום "כללי")
                 if (wordVal !== "") {
                     wordsData.push({
                         category: catVal !== "" ? catVal : "כללי",
@@ -332,13 +394,11 @@
         }
 
         function loadCurrentWord() {
-            // שליפת המילה והקטגוריה הנוכחית מהמערך
             const currentItem = wordsData[currentWordIndex];
             secretWord = currentItem.word;
             guessedLetters = [];
             mistakes = 0;
             
-            // עדכון התצוגה למשתתפים
             document.getElementById('category-display').innerText = `נושא: ${currentItem.category}`;
             document.getElementById('word-counter-display').innerText = `מילה ${currentWordIndex + 1} מתוך ${wordsData.length}`;
             
@@ -460,11 +520,9 @@
             if (currentWordIndex < wordsData.length) {
                 loadCurrentWord();
             } else {
-                // חזרה למסך ההגדרות
                 document.getElementById('setup').classList.remove('hidden');
                 document.getElementById('game-area').classList.add('hidden');
                 
-                // ניקוי כל השדות כדי שאפשר יהיה להתחיל משחק חדש נקי
                 document.querySelectorAll('.cat-input, .word-input').forEach(input => input.value = "");
             }
         }
